@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+T_Exterior_concrete_Normal.uasset filter=lfs diff=lfs merge=lfs -text
+T_Floor_wooden_B_worn_MultiMask.uasset filter=lfs diff=lfs merge=lfs -text
