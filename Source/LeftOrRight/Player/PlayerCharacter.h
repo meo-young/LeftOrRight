@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+class UFootstepComponent;
 class USpotLightComponent;
 class UNiagaraSystem;
 class UInputAction;
@@ -56,6 +57,9 @@ protected:
     
     UPROPERTY(EditDefaultsOnly, Category = "변수")
     TObjectPtr<USpotLightComponent> SpotLightComponent;
+    
+    UPROPERTY(EditDefaultsOnly, Category = "변수")
+    TObjectPtr<UFootstepComponent> FootstepComponent;
     
     UPROPERTY(EditDefaultsOnly, Category = "변수")
     TObjectPtr<UAnimMontage> ShootAnimMontage;

@@ -4,6 +4,7 @@
 #include "LeftOrRight.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "ActorComponent/FootstepComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "Enum/ESFX.h"
@@ -31,7 +32,9 @@ APlayerCharacter::APlayerCharacter()
 	
 	SpotLightComponent = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
 	SpotLightComponent->SetupAttachment(ShotGun, TEXT("Muzzle"));
-	SpotLightComponent->SetVisibility(false); // 기본적으로 꺼진 상태로 시작합니다.
+	SpotLightComponent->SetVisibility(false);
+	
+	FootstepComponent = CreateDefaultSubobject<UFootstepComponent>(TEXT("FootstepComponent"));
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
