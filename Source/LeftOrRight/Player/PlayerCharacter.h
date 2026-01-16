@@ -5,6 +5,7 @@
 #include "PlayerCharacter.generated.h"
 
 class UInputAction;
+class UCameraComponent;
 struct FInputActionValue;
 
 UCLASS()
@@ -22,5 +23,11 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "변수")
 	TObjectPtr<UInputAction> LeftRightAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	TObjectPtr<UCameraComponent> CameraComponent;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	TObjectPtr<USkeletalMeshComponent> ShotGun;
 
 };
