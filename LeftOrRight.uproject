@@ -24,6 +24,11 @@
 		{
 			"Name": "GPULightmass",
 			"Enabled": true
+		},
+		{
+			"Name": "Imperfecter",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/f79321e3c3474d20b993e260eda55935"
 		}
 	]
 }

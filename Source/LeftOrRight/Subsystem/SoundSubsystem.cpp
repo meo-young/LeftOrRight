@@ -11,14 +11,14 @@
 USoundSubsystem::USoundSubsystem()
 {
 	// SFX 데이터테이블을 로드합니다.
-	static ConstructorHelpers::FObjectFinder<UDataTable> SFXDataTableObj(TEXT("/Game/_Nobody/DataTable/DT_SFX.DT_SFX"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> SFXDataTableObj(TEXT("/Game/_LeftOrRight/DataTable/DT_SFX"));
 	if (SFXDataTableObj.Succeeded())
 	{
 		SFXDataTable = SFXDataTableObj.Object;
 	}
 
 	// BGM 데이터테이블을 로드합니다.
-	static ConstructorHelpers::FObjectFinder<UDataTable> BGMDataTableObj(TEXT("/Game/_Nobody/DataTable/DT_BGM.DT_BGM"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> BGMDataTableObj(TEXT("/Game/_LeftOrRight/DataTable/DT_BGM"));
 	if (BGMDataTableObj.Succeeded())
 	{
 		BGMDataTable = BGMDataTableObj.Object;
