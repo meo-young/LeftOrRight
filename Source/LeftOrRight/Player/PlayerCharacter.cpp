@@ -6,6 +6,8 @@
 #include "NiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Enum/ESFX.h"
+#include "Library/SoundLibrary.h"
 
 APlayerCharacter::APlayerCharacter()
 {
