@@ -1,9 +1,11 @@
+// 구현 파일 (.cpp)
 #include "Player/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "LeftOrRight.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SpotLightComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -24,6 +26,10 @@ APlayerCharacter::APlayerCharacter()
 	
 	ShotGun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ShotGun"));
 	ShotGun->SetupAttachment(GetMesh(), TEXT("hand_l"));
+	
+	SpotLightComponent = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
+	SpotLightComponent->SetupAttachment(ShotGun, TEXT("Muzzle"));
+	SpotLightComponent->SetVisibility(false); // 기본적으로 꺼진 상태로 시작합니다.
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -113,10 +119,10 @@ void APlayerCharacter::PlayShootAnim(float Direction)
 	// AnimMontage를 재생합니다.
 	float MontageDuration = AnimInstance->Montage_Play(ShootAnimMontage, 1.0f);
 	
-	// 0.9초 후에 Muzzle 이펙트를 재생합니다.
-	GetWorldTimerManager().SetTimer(MuzzleEffectTimerHandle, this, &ThisClass::PlayMuzzleEffect, 0.8f, false);
+	// 0.8초 후에 Muzzle 이펙트를 재생합니다.
+	GetWorldTimerManager().SetTimer(MuzzleEffectTimerHandle, this, &ThisClass::PlayMuzzleEffect, 0.5f, false);
 	
-	// 2초 후에 사격을 가능한 상태로 만듭니다.
+	// 애니메이션의 80% 지점에서 메시를 원래 위치로 돌립니다.
 	float MeshResetTime = MontageDuration * 0.8f;
 	GetWorldTimerManager().SetTimer(MeshResetTimerHandle, this, &ThisClass::ResetMeshRotation, MeshResetTime, false);
 
@@ -126,18 +132,6 @@ void APlayerCharacter::PlayShootAnim(float Direction)
 
 void APlayerCharacter::PlayMuzzleEffect()
 {
-	if (!MuzzleFlashNiagara)
-	{
-		LOG(TEXT("MuzzleFlashNiagara가 설정되지 않았습니다."))
-		return;
-	}
-
-	if (!ShotGun)
-	{
-		LOG(TEXT("ShotGun이 존재하지 않습니다."))
-		return;
-	}
-
 	// Muzzle 소켓 위치에서 Niagara 이펙트를 재생합니다.
 	UNiagaraComponent* MuzzleComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
 	   MuzzleFlashNiagara,
@@ -152,11 +146,30 @@ void APlayerCharacter::PlayMuzzleEffect()
 	if (MuzzleComponent)
 	{
 		LOG(TEXT("Muzzle 이펙트를 재생했습니다."))
-	 }
+	}
 	else
 	{
 		LOG(TEXT("Muzzle 이펙트 재생에 실패했습니다."))
-	 }
+	}
+
+	// SpotLight를 켭니다.
+	if (SpotLightComponent)
+	{
+		SpotLightComponent->SetVisibility(true);
+		LOG(TEXT("SpotLight를 켰습니다."))
+
+		// 0.2초 후에 SpotLight를 끕니다.
+		GetWorldTimerManager().SetTimer(SpotLightTimerHandle, this, &ThisClass::TurnOffSpotLight, SpotLightDuration, false);
+	}
+}
+
+void APlayerCharacter::TurnOffSpotLight()
+{
+	if (SpotLightComponent)
+	{
+		SpotLightComponent->SetVisibility(false);
+		LOG(TEXT("SpotLight를 껐습니다."))
+	}
 }
 
 void APlayerCharacter::ResetShotState()
