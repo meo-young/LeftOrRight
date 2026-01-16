@@ -16,11 +16,21 @@ class LEFTORRIGHT_API APlayerCharacter : public ACharacter
 public:
 	APlayerCharacter();
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 protected:
+	/** 좌우 입력을 처리하는 함수입니다. */
 	void DoLeftRightAction(const FInputActionValue& InputActionValue);
-	void PlayShootAnim();
+
+	/** 사격 애니메이션을 재생하는 함수입니다. */
+	void PlayShootAnim(float Direction);
+
+	/** 사격 가능 상태로 리셋하는 함수입니다. */
 	void ResetShotState();
+
+	/** 메시를 원래 위치로 돌리는 함수입니다. */
+	void ResetMeshRotation();
 	
 public:
 	uint8 bIsEnableShot : 1 = true;
@@ -38,7 +48,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "변수")
 	TObjectPtr<UAnimMontage> ShootAnimMontage;
 	
+	/** 왼쪽 회전 각도입니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	float LeftMeshRotationAngle = 30.0f;
+    
+	/** 오른쪽 회전 각도입니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	float RightMeshRotationAngle = 15.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	float MeshRotationSpeed = 10.0f;
+	
 private:
 	FTimerHandle ShotTimerHandle;
-
+	FTimerHandle MeshResetTimerHandle;
+	
+	FRotator OriginalMeshRotation;
+	FRotator TargetMeshRotation;
+	
+	uint8 bIsRotatingMesh : 1 = false;
 };
