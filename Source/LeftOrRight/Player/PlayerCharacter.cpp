@@ -1,6 +1,8 @@
 #include "Player/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "LeftOrRight.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -111,12 +113,50 @@ void APlayerCharacter::PlayShootAnim(float Direction)
 	// AnimMontage를 재생합니다.
 	float MontageDuration = AnimInstance->Montage_Play(ShootAnimMontage, 1.0f);
 	
+	// 0.9초 후에 Muzzle 이펙트를 재생합니다.
+	GetWorldTimerManager().SetTimer(MuzzleEffectTimerHandle, this, &ThisClass::PlayMuzzleEffect, 0.8f, false);
+	
 	// 2초 후에 사격을 가능한 상태로 만듭니다.
 	float MeshResetTime = MontageDuration * 0.8f;
 	GetWorldTimerManager().SetTimer(MeshResetTimerHandle, this, &ThisClass::ResetMeshRotation, MeshResetTime, false);
 
 	// 2초 후에 사격을 가능한 상태로 만듭니다.
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ThisClass::ResetShotState, 2.0f, false);
+}
+
+void APlayerCharacter::PlayMuzzleEffect()
+{
+	if (!MuzzleFlashNiagara)
+	{
+		LOG(TEXT("MuzzleFlashNiagara가 설정되지 않았습니다."))
+		return;
+	}
+
+	if (!ShotGun)
+	{
+		LOG(TEXT("ShotGun이 존재하지 않습니다."))
+		return;
+	}
+
+	// Muzzle 소켓 위치에서 Niagara 이펙트를 재생합니다.
+	UNiagaraComponent* MuzzleComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+	   MuzzleFlashNiagara,
+	   ShotGun,
+	   FName("Muzzle"),
+	   FVector::ZeroVector,
+	   FRotator::ZeroRotator,
+	   EAttachLocation::SnapToTargetIncludingScale,
+	   true
+	);
+
+	if (MuzzleComponent)
+	{
+		LOG(TEXT("Muzzle 이펙트를 재생했습니다."))
+	 }
+	else
+	{
+		LOG(TEXT("Muzzle 이펙트 재생에 실패했습니다."))
+	 }
 }
 
 void APlayerCharacter::ResetShotState()

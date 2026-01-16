@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+class UNiagaraSystem;
 class UInputAction;
 class UCameraComponent;
 struct FInputActionValue;
@@ -32,6 +33,9 @@ protected:
 	/** 메시를 원래 위치로 돌리는 함수입니다. */
 	void ResetMeshRotation();
 	
+	/** Muzzle 이펙트를 재생하는 함수입니다. */
+	void PlayMuzzleEffect();
+	
 public:
 	uint8 bIsEnableShot : 1 = true;
 
@@ -48,6 +52,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "변수")
 	TObjectPtr<UAnimMontage> ShootAnimMontage;
 	
+	/** Muzzle Flash Niagara System입니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	TObjectPtr<UNiagaraSystem> MuzzleFlashNiagara;
+	
 	/** 왼쪽 회전 각도입니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수")
 	float LeftMeshRotationAngle = 30.0f;
@@ -62,6 +70,7 @@ protected:
 private:
 	FTimerHandle ShotTimerHandle;
 	FTimerHandle MeshResetTimerHandle;
+	FTimerHandle MuzzleEffectTimerHandle;
 	
 	FRotator OriginalMeshRotation;
 	FRotator TargetMeshRotation;
