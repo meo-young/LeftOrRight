@@ -39,7 +39,35 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::DoLeftRightAction(const FInputActionValue& InputActionValue)
 {
+	if (!bIsEnableShot) return;
+	
 	const float LeftActionValue = InputActionValue.Get<float>();
-
+	
 	LOG(TEXT("%f"), LeftActionValue);
+	PlayShootAnim();
+}
+
+void APlayerCharacter::PlayShootAnim()
+{
+	// AnimInstance를 가져옵니다.
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!AnimInstance)
+	{
+		LOG(TEXT("AnimInstance가 존재하지 않습니다."))
+		return;
+	}
+	
+	// 사격이 불가능한 상태로 변환합니다.
+	bIsEnableShot = false;
+	
+	// AnimMontage를 재생합니다.
+	AnimInstance->Montage_Play(ShootAnimMontage, 1.0f);
+	
+	// 2초 후에 사격을 가능한 상태로 만듭니다.
+	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ThisClass::ResetShotState, 2.0f, false);
+}
+
+void APlayerCharacter::ResetShotState()
+{
+	bIsEnableShot = true;
 }

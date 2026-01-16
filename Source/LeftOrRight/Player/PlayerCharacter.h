@@ -19,6 +19,11 @@ public:
 
 protected:
 	void DoLeftRightAction(const FInputActionValue& InputActionValue);
+	void PlayShootAnim();
+	void ResetShotState();
+	
+public:
+	uint8 bIsEnableShot : 1 = true;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "변수")
@@ -29,5 +34,11 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "변수")
 	TObjectPtr<USkeletalMeshComponent> ShotGun;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	TObjectPtr<UAnimMontage> ShootAnimMontage;
+	
+private:
+	FTimerHandle ShotTimerHandle;
 
 };
