@@ -24,6 +24,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USkeletalMeshComponent> Mesh;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	FTransform LeftTransform;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	FTransform RightTransform;
+	
 	/** 이벤트가 종료되는 시간입니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수")
 	float EventFinishTime = 5.0f;

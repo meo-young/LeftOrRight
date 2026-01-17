@@ -15,12 +15,6 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	FTimerHandle TestTimerHandle;
-	GetWorldTimerManager().SetTimer(TestTimerHandle, [this]()
-	{
-		StartEvent(-1);
-	}, 1.0f, false);
 }
 
 void AEnemyBase::StartEvent(const int8 Direction)
@@ -45,4 +39,13 @@ void AEnemyBase::StartEvent(const int8 Direction)
 	FootstepComponent->PlayFootstep(Direction, FootstepSound, EventFinishTime);
     
 	LOG(TEXT("EnemyBase: 발자국 이벤트 시작 - 방향: %s"), Direction == 1 ? TEXT("오른쪽") : TEXT("왼쪽"));
+	
+	if (Direction == 1)
+	{
+		SetActorTransform(RightTransform);
+	}
+	else
+	{
+		SetActorTransform(LeftTransform);	
+	}
 }
