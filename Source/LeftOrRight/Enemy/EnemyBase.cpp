@@ -1,7 +1,9 @@
 #include "Enemy/EnemyBase.h"
 #include "LeftOrRight.h"
 #include "ActorComponent/FootstepComponent.h"
+#include "GameMode/MainGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/PlayerCharacter.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -24,25 +26,14 @@ void AEnemyBase::StartEvent(const int8 Direction)
 	PlayRandomAnimation();
 	
 	// 플레이어를 찾습니다.
-	APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	if (!Player)
-	{
-		LOG(TEXT("플레이어를 찾을 수 없습니다."));
-		return;
-	}
-
+	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	Player->bIsEnableShot = true;
+	
 	// 플레이어의 FootstepComponent를 가져옵니다.
 	UFootstepComponent* FootstepComponent = Player->FindComponentByClass<UFootstepComponent>();
-	if (!FootstepComponent)
-	{
-		LOG(TEXT("플레이어에게 FootstepComponent가 없습니다."));
-		return;
-	}
 
 	// 발자국 소리를 재생합니다.
 	FootstepComponent->PlayFootstep(Direction, FootstepSound, EventFinishTime);
-    
-	LOG(TEXT("EnemyBase: 발자국 이벤트 시작 - 방향: %s"), Direction == 1 ? TEXT("오른쪽") : TEXT("왼쪽"));
 	
 	if (Direction == 1)
 	{
@@ -52,6 +43,13 @@ void AEnemyBase::StartEvent(const int8 Direction)
 	{
 		SetActorTransform(LeftTransform);	
 	}
+	
+	GetWorldTimerManager().SetTimer(EventFinishTimerHandle, this, &ThisClass::FinishEvent, EventFinishTime, false);
+}
+
+void AEnemyBase::StopEvent()
+{
+	GetWorldTimerManager().ClearTimer(EventFinishTimerHandle);
 }
 
 void AEnemyBase::PlayRandomAnimation()
@@ -62,4 +60,16 @@ void AEnemyBase::PlayRandomAnimation()
 	
 	// 애니메이션을 루프로 재생합니다.
 	Mesh->PlayAnimation(SelectedAnimation, true);
+}
+
+void AEnemyBase::FinishEvent()
+{
+	// 플레이어를 찾습니다.
+	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	Player->bIsEnableShot = false;
+	
+	LOG(TEXT("이벤트 제한시간이 종료됐습니다"))
+	
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	GameMode->StopGame();
 }

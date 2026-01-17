@@ -16,6 +16,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void StartPlay() override;
 	
+public:
+	void StopGame();
+	
 protected:
 	void StartGame();
 	void StartTimer();

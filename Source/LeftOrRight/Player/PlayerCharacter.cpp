@@ -142,9 +142,6 @@ void APlayerCharacter::PlayShootAnim(float Direction)
 	// 애니메이션의 80% 지점에서 메시를 원래 위치로 돌립니다.
 	float MeshResetTime = MontageDuration * 0.8f;
 	GetWorldTimerManager().SetTimer(MeshResetTimerHandle, this, &ThisClass::ResetMeshRotation, MeshResetTime, false);
-
-	// 2초 후에 사격을 가능한 상태로 만듭니다.
-	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ThisClass::ResetShotState, 2.0f, false);
 }
 
 void APlayerCharacter::PlayMuzzleEffect()
@@ -188,6 +185,7 @@ void APlayerCharacter::CheckEnemyDirection()
 	{
 		LOG(TEXT("정답입니다"))
 		FootstepComponent->StopFootstep();
+		Enemy->StopEvent();
 	}
 	else
 	{

@@ -23,9 +23,14 @@ void AMainGameMode::StartPlay()
 {
 	Super::StartPlay();
 	
-	float RandomValue = FMath::RandRange(EventInterval - 1.0f, EventInterval + 1.0f);
-	GetWorldTimerManager().SetTimer(GameEventTimerHandle, this, &ThisClass::StartGame, RandomValue, true);
+	GetWorldTimerManager().SetTimer(GameEventTimerHandle, this, &ThisClass::StartGame, Enemy->EventFinishTime + 1.0f, true);
 	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &AMainGameMode::StartTimer, 1.0f, true);
+}
+
+void AMainGameMode::StopGame()
+{
+	GetWorldTimerManager().ClearTimer(GameEventTimerHandle);
+	GetWorldTimerManager().ClearTimer(GameTimerHandle);
 }
 
 void AMainGameMode::StartGame()
@@ -35,6 +40,9 @@ void AMainGameMode::StartGame()
 		int32 RandomValue = FMath::RandBool() ? 1 : -1;
 		Enemy->StartEvent(RandomValue);
 	}
+	
+	const float RandomValue = FMath::RandRange(Enemy->EventFinishTime + 1.0f, Enemy->EventFinishTime + 3.0f);
+	GetWorldTimerManager().SetTimer(GameEventTimerHandle, this, &ThisClass::StartGame, RandomValue, true);
 }
 
 void AMainGameMode::StartTimer()

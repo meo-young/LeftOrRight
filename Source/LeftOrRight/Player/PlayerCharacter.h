@@ -48,7 +48,7 @@ protected:
     void CheckEnemyDirection();
     
 public:
-    uint8 bIsEnableShot : 1 = true;
+    uint8 bIsEnableShot : 1 = false;
     int8 PlayerDirection;
 
 protected:
