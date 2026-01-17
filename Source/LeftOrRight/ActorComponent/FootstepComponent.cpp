@@ -31,7 +31,7 @@ void UFootstepComponent::BeginPlay()
         LeftAudioComponent->bAllowSpatialization = true; // 3D 사운드 활성화
         
         // 왼쪽에 배치합니다.
-        LeftAudioComponent->SetRelativeLocation(FVector(0.0f, -800.0f, 0.0f));
+        LeftAudioComponent->SetRelativeLocation(FVector(100.0f, -800.0f, 0.0f));
         
         LOG(TEXT("FootstepComponent: LeftAudioComponent 생성 완료"));
     }
@@ -46,7 +46,7 @@ void UFootstepComponent::BeginPlay()
         LeftAudioComponent->bAllowSpatialization = true; // 3D 사운드 활성화
         
         // 오른쪽에 배치합니다.
-        RightAudioComponent->SetRelativeLocation(FVector(0.0f, 800.0f, 0.0f));
+        RightAudioComponent->SetRelativeLocation(FVector(100.0f, 800.0f, 0.0f));
         
         LOG(TEXT("FootstepComponent: RightAudioComponent 생성 완료"));
     }
