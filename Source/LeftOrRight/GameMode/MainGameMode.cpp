@@ -11,7 +11,6 @@ void AMainGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 	if (AEnemyBase* FoundEnemy = Cast<AEnemyBase>(FoundActor))
 	{
 		Enemy = FoundEnemy;
-		LOG(TEXT("Enemy를 발견했습니다"))
 	}
 }
 
@@ -24,7 +23,8 @@ void AMainGameMode::StartPlay()
 {
 	Super::StartPlay();
 	
-	GetWorldTimerManager().SetTimer(GameEventTimerHandle, this, &ThisClass::StartGame, 6.0f, true);
+	float RandomValue = FMath::RandRange(EventInterval - 1.0f, EventInterval + 1.0f);
+	GetWorldTimerManager().SetTimer(GameEventTimerHandle, this, &ThisClass::StartGame, RandomValue, true);
 	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &AMainGameMode::StartTimer, 1.0f, true);
 }
 
@@ -32,7 +32,7 @@ void AMainGameMode::StartGame()
 {
 	if (Enemy)
 	{
-		int32 RandomValue = FMath::RandRange(0, 1) == 0 ? -1 : 1;
+		int32 RandomValue = FMath::RandBool() ? 1 : -1;
 		Enemy->StartEvent(RandomValue);
 	}
 }

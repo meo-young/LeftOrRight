@@ -22,6 +22,9 @@ protected:
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
+	float EventInterval = 5.0f;
+	
+	UPROPERTY(EditDefaultsOnly)
 	int32 GameDuration = 60;
 	
 	UPROPERTY()

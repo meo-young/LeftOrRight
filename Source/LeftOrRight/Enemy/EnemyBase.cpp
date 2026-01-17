@@ -19,6 +19,8 @@ void AEnemyBase::BeginPlay()
 
 void AEnemyBase::StartEvent(const int8 Direction)
 {
+	CurrentDirection = Direction;
+	
 	// 플레이어를 찾습니다.
 	APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (!Player)

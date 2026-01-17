@@ -17,6 +17,9 @@ public:
 	/** 이벤트를 시작하는 함수입니다. (-1 : 왼쪽, 1 : 오른쪽) */
 	void StartEvent(const int8 Direction);
 	
+public:
+	int8 CurrentDirection;
+	
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USceneComponent> DefaultSceneRoot;;

@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+class AEnemyBase;
 class UFootstepComponent;
 class USpotLightComponent;
 class UNiagaraSystem;
@@ -20,6 +21,7 @@ class LEFTORRIGHT_API APlayerCharacter : public ACharacter
 public:
     APlayerCharacter();
     virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+    virtual void PostInitializeComponents() override;
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 
@@ -42,8 +44,12 @@ protected:
     /** SpotLight를 끄는 함수입니다. */
     void TurnOffSpotLight();
     
+    /** Enemy의 현재 방향을 확인하는 함수입니다. */
+    void CheckEnemyDirection();
+    
 public:
     uint8 bIsEnableShot : 1 = true;
+    int8 PlayerDirection;
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "변수")
@@ -84,6 +90,9 @@ protected:
     float MeshRotationSpeed = 10.0f;
     
 private:
+    UPROPERTY()
+    TObjectPtr<AEnemyBase> Enemy;
+    
     FTimerHandle ShotTimerHandle;
     FTimerHandle MeshResetTimerHandle;
     FTimerHandle MuzzleEffectTimerHandle;

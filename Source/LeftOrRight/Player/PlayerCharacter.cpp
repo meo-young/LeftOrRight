@@ -1,4 +1,3 @@
-// 구현 파일 (.cpp)
 #include "Player/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "LeftOrRight.h"
@@ -7,7 +6,9 @@
 #include "ActorComponent/FootstepComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Enemy/EnemyBase.h"
 #include "Enum/ESFX.h"
+#include "Kismet/GameplayStatics.h"
 #include "Library/SoundLibrary.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -50,6 +51,17 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
+void APlayerCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyBase::StaticClass());
+	if (AEnemyBase* FoundEnemy = Cast<AEnemyBase>(FoundActor))
+	{
+		Enemy = FoundEnemy;
+	}
+}
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -87,6 +99,8 @@ void APlayerCharacter::DoLeftRightAction(const FInputActionValue& InputActionVal
 	
 	const float LeftRightActionValue = InputActionValue.Get<float>();
 	PlayShootAnim(LeftRightActionValue);
+	
+	PlayerDirection = LeftRightActionValue;
 }
 
 void APlayerCharacter::PlayShootAnim(float Direction)
@@ -110,13 +124,11 @@ void APlayerCharacter::PlayShootAnim(float Direction)
 	{
 		// 왼쪽
 		TargetMeshRotation.Yaw -= LeftMeshRotationAngle;
-		LOG(TEXT("메시 왼쪽 회전: %f도"), LeftMeshRotationAngle);
 	}
 	else
 	{
 		// 오른쪽
 		TargetMeshRotation.Yaw += RightMeshRotationAngle;
-		LOG(TEXT("메시 오른쪽 회전: %f도"), RightMeshRotationAngle);
 	}
 	
 	bIsRotatingMesh = true;
@@ -148,15 +160,6 @@ void APlayerCharacter::PlayMuzzleEffect()
 	   true
 	);
 
-	if (MuzzleComponent)
-	{
-		LOG(TEXT("Muzzle 이펙트를 재생했습니다."))
-	}
-	else
-	{
-		LOG(TEXT("Muzzle 이펙트 재생에 실패했습니다."))
-	}
-
 	// SpotLight를 켭니다.
 	if (SpotLightComponent)
 	{
@@ -166,6 +169,8 @@ void APlayerCharacter::PlayMuzzleEffect()
 		// 0.2초 후에 SpotLight를 끕니다.
 		GetWorldTimerManager().SetTimer(SpotLightTimerHandle, this, &ThisClass::TurnOffSpotLight, SpotLightDuration, false);
 	}
+	
+	CheckEnemyDirection();
 }
 
 void APlayerCharacter::TurnOffSpotLight()
@@ -174,6 +179,19 @@ void APlayerCharacter::TurnOffSpotLight()
 	{
 		SpotLightComponent->SetVisibility(false);
 		LOG(TEXT("SpotLight를 껐습니다."))
+	}
+}
+
+void APlayerCharacter::CheckEnemyDirection()
+{
+	if (PlayerDirection == Enemy->CurrentDirection)
+	{
+		LOG(TEXT("정답입니다"))
+		FootstepComponent->StopFootstep();
+	}
+	else
+	{
+		LOG(TEXT("틀렸습니다. 사망합니다"))
 	}
 }
 
