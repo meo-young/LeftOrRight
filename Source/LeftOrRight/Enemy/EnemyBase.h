@@ -17,6 +17,10 @@ public:
 	/** 이벤트를 시작하는 함수입니다. (-1 : 왼쪽, 1 : 오른쪽) */
 	void StartEvent(const int8 Direction);
 	
+private:
+	/** 랜덤 애니메이션을 재생하는 함수입니다. */
+	void PlayRandomAnimation();
+	
 public:
 	int8 CurrentDirection;
 	
@@ -40,5 +44,9 @@ protected:
 	/** 발자국 소리입니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수")
 	TObjectPtr<USoundCue> FootstepSound;
+	
+	/** 랜덤으로 재생할 애니메이션 배열입니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수")
+	TArray<TObjectPtr<UAnimSequence>> EventAnimations;
 
 };

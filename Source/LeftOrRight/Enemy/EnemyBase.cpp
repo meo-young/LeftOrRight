@@ -21,6 +21,8 @@ void AEnemyBase::StartEvent(const int8 Direction)
 {
 	CurrentDirection = Direction;
 	
+	PlayRandomAnimation();
+	
 	// 플레이어를 찾습니다.
 	APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (!Player)
@@ -50,4 +52,14 @@ void AEnemyBase::StartEvent(const int8 Direction)
 	{
 		SetActorTransform(LeftTransform);	
 	}
+}
+
+void AEnemyBase::PlayRandomAnimation()
+{
+	// 랜덤 인덱스를 선택합니다.
+	int32 RandomIndex = FMath::RandRange(0, EventAnimations.Num() - 1);
+	UAnimSequence* SelectedAnimation = EventAnimations[RandomIndex];
+	
+	// 애니메이션을 루프로 재생합니다.
+	Mesh->PlayAnimation(SelectedAnimation, true);
 }
